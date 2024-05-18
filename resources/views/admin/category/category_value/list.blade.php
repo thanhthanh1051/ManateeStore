@@ -19,6 +19,7 @@
                 <thead>
                     <tr>
                         <th>Name</th>
+                        <th>Category Parent</th>
                         <th>Category Product</th>
                         <th width="20%">Created_At</th>
                         <th width="20%">Updated_At</th>
@@ -32,10 +33,11 @@
                             @foreach ($list as $item)
                                 <tr>
                                     <td>{{$item -> name}}</td>
+                                    <td>{{getNameCategoryParent($item -> category_parent)}}</td>
                                     <td>{{getNameCategoryProduct($item -> category_product)}}</td>
                                     <td>{{$item -> created_at}}</td>
                                     <td>{{$item -> updated_at}}</td>
-                                    <td><a href="{{route('admin.categories.getUpdateCategoryValue',['id'=>$item->id])}}" class="btn btn-warning" style="cursor: pointer">Sửa</a></td>
+                                    <td><a href="{{route('admin.categories.getUpdateCategoryValueParent',['id'=>$item->id])}}" class="btn btn-warning" style="cursor: pointer">Sửa</a></td>
                                     <td><a href="{{route('admin.categories.deleteCateValue',['id'=>$item->id])}}" class="btn btn-danger" style="cursor: pointer">Xóa</a></td>
                                     {{-- <td><a onclick="deleteCateProduct({{$item->id}})" class="btn btn-danger" style="cursor: pointer">Xóa</a></td> --}}
                                 </tr>

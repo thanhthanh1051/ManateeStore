@@ -34,11 +34,11 @@ class CategoryParentProduct extends Model
     }
     public function categoryProducts()
     {
-        return $this->hasMany(CategoryProduct::class, 'category_product', 'id');
+        return $this->hasMany(CategoryProduct::class, 'id', 'category_product');
     }
     public function categoryParents()
     {
-        return $this->hasMany(CategoryParent::class, 'category_parent', 'id');
+        return $this->hasMany(CategoryParent::class, 'id', 'category_parent');
     }
     public function canBeDeletedCategoryProduct()
     {

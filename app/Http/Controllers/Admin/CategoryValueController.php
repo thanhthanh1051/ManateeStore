@@ -23,6 +23,9 @@ class CategoryValueController extends Controller
     public function getAdd(){
         return view('admin.category.category_value.add');
     }
+    public function getAddCategoryParent(){
+        return view('admin.category.category_value.add_CateProduct');
+    }
     public function postAdd(Request $req){
         $req ->validate([
             'name' => 'required',
@@ -30,23 +33,51 @@ class CategoryValueController extends Controller
         $category = new CategoryValue;
         $data = [
         "name" => $req->name,
-        "category_product" => $req->category_product,
-        "category_parent" => $req->category_parent,
+        "category_product" => $req->categoryproduct,
+        "category_parent" => $req->categoryparent,
         ];
         $check = $this->categoryValue->add($data);
         if($check) {
-            return redirect()->route('admin.categories.categoryValueAdd',compact('check'))->with('msg','Add success');
+            return redirect()->route('admin.categories.categoryValueList',compact('check'))->with('msg','Add success');
         }
-        return redirect()->route('admin.categories.categoryValueAdd');
+        return redirect()->route('admin.categories.categoryValueList');
+    }
+    public function postAddCategoryParent(Request $req){
+        $req ->validate([
+            'name' => 'required',
+        ]);
+        $name = $req->name;
+        $cateParent = $req->categoryparent;
+        // dd($cateParent);
+        // dd($name);
+        // return redirect()->route('admin.categories.categoryValueAdd',compact('name','cateParent'))->with('msg','Add success');
+        return view('admin.category.category_value.add', compact('name','cateParent'));
     }
     public function getUpdate($id = 0){
         if(!empty($id) && ctype_digit($id)){
-            $category = $this>categoryValue->getDetail($id);
+            $category = $this->categoryValue->getDetail($id);
             if(!empty($category)){
                 return view('admin.category.category_value.update', compact('category'));
             }
         }
-        return view('admin.category.category_product.update');
+        return view('admin.category.category_value.update');
+    }
+    public function getUpdateCategoryParent($id = 0){
+        if(!empty($id) && ctype_digit($id)){
+            $category = $this->categoryValue->getDetail($id);
+            if(!empty($category)){
+                return view('admin.category.category_value.update_CateProduct', compact('category'));
+            }
+        }
+        return view('admin.category.category_value.update_CateProduct');
+    }
+    public function postUpdateCategoryParent(Request $req, $id = 0){
+        $req ->validate([
+            'name' => 'required',
+        ]);
+        $name = $req->name;
+        $cateParent = $req->categoryparent;
+        return view('admin.category.category_value.update', compact('name','cateParent','id'));
     }
     public function postUpdate(Request $req, $id){
         if(!empty($id) && ctype_digit($id)){
@@ -55,11 +86,11 @@ class CategoryValueController extends Controller
             ]); 
             $data = [
                 "name" => $req->name,
-                "category_product" => $req->category_product,
-                "category_parent" => $req->category_parent
+                "category_product" => $req->categoryproduct,
+                "category_parent" => $req->categoryparent
             ];
             if(!empty($data)){
-                $this->categoryvalue->updateItem($id,$data);
+                $this->categoryValue->updateItem($id,$data);
                 return redirect()->route('admin.categories.categoryValueList');
             }
         }
@@ -82,6 +113,7 @@ class CategoryValueController extends Controller
     }
     public function getCategoryProducts(Request $request, $categoryParentId){
         $categoryProducts = CategoryParentProduct::where('category_parent', $categoryParentId)->get();
+         
         return response()->json($categoryProducts);
     }
 }

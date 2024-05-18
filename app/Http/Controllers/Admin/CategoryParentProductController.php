@@ -73,8 +73,8 @@ class CategoryParentProductController extends Controller
     }
     public function deleteItem($id = 0){
         if(!empty($id) && ctype_digit($id)){
-                if ($category->canBeDeletedCategoryProducts()) {
-                    if($category->canBeDeletedCategoryParents())
+                if ($this->categoryParentProduct->canBeDeletedCategoryProduct()) {
+                    if($this->categoryParentProduct->canBeDeletedCategoryParent())
                     {
                         $this->categoryParentProduct->deleteItem($id);
                         return redirect()->route('admin.categories.getCategoryParentProduct')->with('msg','Deleted Success');

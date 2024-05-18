@@ -86,7 +86,7 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Custom Products:</h6>
                         <a class="collapse-item" href="{{route('admin.products.getList')}}">Show List</a>
-                        <a class="collapse-item" href="{{route('admin.products.getAdd')}}">Add New</a>
+                        <a class="collapse-item" href="{{route('admin.products.getAddCateParent')}}">Add New</a>
                     </div>
                 </div>
             </li>
@@ -104,7 +104,7 @@
                         <a class="collapse-item" href="{{route('admin.categories.listCategoryProduct')}}">List Category Product</a>
                         <a class="collapse-item" href="{{route('admin.categories.categoryProductAdd')}}">Add Category Product</a>
                         <a class="collapse-item" href="{{route('admin.categories.categoryValueList')}}">List Category Value</a>
-                        <a class="collapse-item" href="{{route('admin.categories.categoryValueAdd')}}">Add Category Value</a>
+                        <a class="collapse-item" href="{{route('admin.categories.getAddCategoryParent')}}">Add Category Value</a>
                     </div>
                 </div>
             </li>

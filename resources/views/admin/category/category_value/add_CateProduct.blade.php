@@ -10,15 +10,15 @@
         </div>
     <div class="card shadow mb-4">
         <div class="card-body">
-            <form action="{{route('admin.categories.postcategoryValue')}}" method="POST">
+            <form action="{{route('admin.categories.postAddCategoryParent')}}" method="POST">
                     <div class="mb-3">
                         <label for="">Name</label>
-                        <input type="text" name="name" class="form-control w-50" placeholder="Category Name..." autocomplete value="{{old('name') ?? $name}}">
+                        <input type="text" name="name" class="form-control w-50" placeholder="Category Name..." autocomplete value="{{old("name")}}">
                         @error('name')
                             <span style="color: red">{{$message}}</span>
                         @enderror
                     </div>
-                    {{-- <div class="mb-3">
+                    <div class="mb-3">
                         <label for="">Category Parent</label>
                         <select class="form-control w-50" required name="categoryparent" id="categoryparent">
                             <option value="0">Open this select menu</option>
@@ -31,41 +31,21 @@
                         @error('categoryparent')
                           <span style="color: red">{{$message}}</span>
                         @enderror
-                    </div> --}}
-                    <div class="mb-3">
-                        <label for="">Category Parent</label>
-                        <select class="form-control w-50" required name="categoryparent" id="categoryparent">
-                            {{-- @if(isset($cateParent))
-                            @foreach($cateParent as $item) --}}
-                                <option value="{{$cateParent}}">{{getNameCategoryParent($cateParent)}}</option>
-                            {{-- @endforeach
-                            @endif --}}
-                            {{-- @if (!empty(getCategoryParent($cateParent)))
-                                @foreach(getCategoryParent($cateParent) as $item)
-                                    <option value="{{$item->id}}">{{$item->name}}</option>
-                                @endforeach
-                            @endif --}}
-                        </select>
-                        @error('categoryparent')
-                          <span style="color: red">{{$message}}</span>
-                        @enderror
                     </div>
-                   <div class="mb-3">
+                    {{-- <div class="mb-3">
                         <label for="">Category Product</label>
                         <select class="form-control w-50" required name="categoryproduct" id="categoryproduct">
                             <option value="0">Open this select menu</option>
-                            @if(isset($cateParent))
                             @if (!empty(getCategoryProductWParent($cateParent)))
-                                @foreach(getCategoryProductWParent($cateParent) as $item)
-                                    <option value="{{$item->category_product}}">{{getNameCategoryProduct($item->category_product)}}</option>
+                                @foreach(getCategoryParentWParent($cateParent) as $item)
+                                    <option value="{{$item->id}}">{{$item->name}}</option>
                                 @endforeach
-                            @endif
                             @endif
                         </select>
                         @error('categoryparent')
                           <span style="color: red">{{$message}}</span>
                         @enderror
-                    </div>
+                    </div> --}}
                 <button type="submit" class="btn btn-primary">Add New</button>
                 @csrf
             </form>
@@ -90,29 +70,29 @@
     <script src="{{asset('admins')}}/js/demo/chart-area-demo.js"></script>
     <script src="{{asset('admins')}}/js/demo/chart-pie-demo.js"></script>
     <script>
-        // document.getElementById('categoryparent').onchange = function(){
-        //     var categoryParentId = this.value;
+        document.getElementById('categoryparent').onchange = function(){
+            var categoryParentId = this.value;
 
-        //     var xhr = new XMLHttpRequest();
-        //     xhr.onreadystatechange = function(){
-        //         if(xhr.readyState == XMLHttpRequest.DONE){
-        //             if(xhr.status === 200){
-        //                 document.getElementById('categoryproduct').innerHTML = "";
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function(){
+                if(xhr.readyState == XMLHttpRequest.DONE){
+                    if(xhr.status === 200){
+                        document.getElementById('categoryproduct').innerHTML = "";
 
-        //                 var categoryProducts = JSON.parse(xhr.responseText);
-        //                 categoryProducts.foreach(function(product){
-        //                     var option = document.createElement("option");
-        //                     option.text = getNameCategoryProduct(product.category_product);
-        //                     option.value = product.category_product;
-        //                     document.getElementById('categoryproduct').add(option);
-        //                 });
-        //             } else {
-        //                 console.log('Request failed!');
-        //             }
-        //         }
-        //     };
-        //     xhr.open('GET', '/admin/categories/get-category-products/' + categoryParentId, true);
-        //     xhr.send();
-        // }
+                        var categoryProducts = JSON.parse(xhr.responseText);
+                        categoryProducts.foreach(function(product){
+                            var option = document.createElement("option");
+                            option.text = getNameCategoryProduct(product.category_product);
+                            option.value = product.category_product;
+                            document.getElementById('categoryproduct').add(option);
+                        });
+                    } else {
+                        console.log('Request failed!');
+                    }
+                }
+            };
+            xhr.open('GET', '/admin/categories/get-category-products/' + categoryParentId, true);
+            xhr.send();
+        }
     </script>
 @endsection

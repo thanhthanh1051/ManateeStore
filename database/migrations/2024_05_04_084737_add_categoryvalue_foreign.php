@@ -13,9 +13,14 @@ return new class extends Migration
     {
         Schema::table('categoryvalues',function(Blueprint $table) {
             $table
-            ->foreign('category_id')
+            ->foreign('category_product')
             ->references('id')
-            ->on('categoryparentproducts');
+            ->on('categoryproducts');
+
+            $table
+            ->foreign('category_parent')
+            ->references('id')
+            ->on('categoryparents');
         });
     }
 
@@ -25,7 +30,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('categoryvalues',function(Blueprint $table) {
-            $table->dropForeign('categoryvalues_category_id_foreign');
+            $table->dropForeign('categoryvalues_category_product_foreign');
+            $table->dropForeign('categoryvalues_category_parent_foreign');
         });
     }
 };

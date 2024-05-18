@@ -63,15 +63,17 @@ class CategoryParentController extends Controller
     }
     public function deleteItem($id = 0){
         if(!empty($id) && ctype_digit($id)){
-            $category = CategoryParents::find($id);
-            if(!empty($category)){
+            $category = $this->categoryParent::find($id);
                 if ($category->canBeDeleted()) {
-                    $this->categoryParent->deleteItem($id);
+                    if($category->canBeDeletedParentProduct()){
+                        $this->categoryParent->deleteItem($id);
                     return redirect()->route('admin.categories.getList')->with('msg','Deleted Success');
-                } else {
+                    } else {
+                        return redirect()->route('admin.categories.getList')->with('error','Không thể xóa category này vì có liên kết với bảng khác');
+                    }
+                }else{
                     return redirect()->route('admin.categories.getList')->with('error','Không thể xóa category này vì có liên kết với bảng khác');
                 }
-            }
         }
         return redirect()->route('admin.categories.getList');
     }

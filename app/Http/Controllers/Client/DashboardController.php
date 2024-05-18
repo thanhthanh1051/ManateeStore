@@ -6,15 +6,18 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\CategoryProduct;
 use App\Models\CategoryValue;
+use App\Models\Product;
 class DashboardController extends Controller
 {
     public function home(){
 
         return view('client.home.index');
     }
-    public function navbar($cateParent, $id){
-        $cateValue = CategoryValue::where('category_product', $id)->get();
-        return view('client.navbar.list_product',compact('cateValue','id'));
+    public function navbar($cateParent, $catePro){
+        $products = Product::where('category_product', $catePro)
+                                    ->where('category_parent', $cateParent)
+                                    ->get();
+        return view('client.navbar.list_product',compact('products','catePro','cateParent'));
     }
     // public function getListProduct($id){
     //     $cateValue = CategoryValue::where('category_product', $id)->get();

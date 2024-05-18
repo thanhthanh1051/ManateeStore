@@ -38,17 +38,17 @@ class CategoryProductController extends Controller
     }
     public function getUpdate($id=0){
         if(!empty($id) && ctype_digit($id)){
-            $category = $this->categoryProduct->getDeatil($id);
+            $category = $this->categoryProduct->getDetail($id);
             if(!empty($category)){
                 return view('admin.category.category_product.update', compact('category'));
             }
         }
         return view('admin.category.category_product.update');
     }
-    public function postUpdate(){
+    public function postUpdate(Request $req, $id){
         if(!empty($id) && ctype_digit($id)){
             $req->validate([
-                'name' => 'required | unique:categoyproducts,name,'.$id
+                'name' => 'required | unique:categoryproducts,name,'.$id
             ]);
             $data = [
                 "name" => $req->name
@@ -62,13 +62,21 @@ class CategoryProductController extends Controller
     }
     public function deleteItem($id = 0){
         if(!empty($id) && ctype_digit($id)){
-            $category = CategoryProducts::find($id);
+            $category = $this->categoryProduct::find($id);
             if(!empty($category)){
-                if ($category->canBeDeleted()) {
-                    $this->categoryProduct->deleteItem($id);
-                    return redirect()->route('admin.categories.listCategoryProduct')->with('msg','Deleted Success');
+                if ($category->canBeDeletedProduct()) {
+                    if($category->canBeDeletedParentProduct()){
+                        if($category->canBeDeleted()){
+                            $category->deleteItem($id);
+                            return redirect()->route('admin.categories.listCategoryProduct')->with('msg','Deleted Success');    
+                        } else {
+                            return redirect()->route('admin.categories.listCategoryProduct')->with('error','Không thể xóa category này vì có liên kết với bảng Value');
+                        }
+                    } else {
+                        return redirect()->route('admin.categories.listCategoryProduct')->with('error','Không thể xóa category này vì có liên kết với bảng Parent Product');
+                    }
                 } else {
-                    return redirect()->route('admin.categories.listCategoryProduct')->with('error','Không thể xóa category này vì có liên kết với bảng khác');
+                    return redirect()->route('admin.categories.listCategoryProduct')->with('error','Không thể xóa category này vì có liên kết với bảng Product');
                 }
             }
         }

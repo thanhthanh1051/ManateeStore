@@ -24,6 +24,29 @@ class ProductController extends Controller
         $title = 'Add a new product';
         return view('admin.product.add',compact('title'));
     }
+    public function getAddCateParent() {
+        $title = 'Add a new product';
+        return view('admin.product.add_CateParent',compact('title'));
+    }
+    public function postAddCateParent(Request $req){
+        $req ->validate([
+            'categoryparent' => 'required | regex:/^(?!0$).*/'
+        ]);
+        $cateParent = $req->categoryparent;
+        return view('admin.product.add_CateProduct',compact('cateParent'));
+    }
+    public function getAddCateProduct() {
+        $title = 'Add a new product';
+        return view('admin.product.add_CateProduct ',compact('title'));
+    }
+    public function postAddCateProduct(Request $req){
+        $req ->validate([
+            'categoryproduct' => 'required | regex:/^(?!0$).*/'
+        ]);
+        $cateParent = $req->categoryparent;
+        $cateProduct = $req->categoryproduct;
+        return view('admin.product.add',compact('cateParent','cateProduct'));
+    }
     public function postAdd(Request $req){
         $req ->validate([  
             'code' => 'required | unique:products',
@@ -65,7 +88,7 @@ class ProductController extends Controller
         $product->price_sell = $req->price_sell;
         $check = $product->save();
         if($check) {
-            return redirect()->route('admin.products.getList',compact('check'))->with('msg','Thêm sản phẩm thành công');
+            return redirect()->route('admin.products.getList')->with('msg','Thêm sản phẩm thành công');
         }
         return redirect()->route('admin.products.getList')->with('error','Thêm sản phẩm thất bại');
     }
@@ -73,10 +96,48 @@ class ProductController extends Controller
         if(!empty($id) && ctype_digit($id)){
             $product = Product::find($id);
             if(!empty($product)) {
-                return view('admin.product.update', compact('product'));
+                return view('admin.product.update', compact('product','id'));
             }
         }
         return view('admin.product.update');
+    }
+    public function getUpdateCateParent($id =0) {
+        if(!empty($id) && ctype_digit($id)){
+            $product = Product::find($id);
+            if(!empty($product)) {
+                return view('admin.product.update_CateParent', compact('product','id'));
+            }
+        }
+        return view('admin.product.update');
+    }
+    public function postUpdateCateParent(Request $req, $id){
+        if(!empty($id) && ctype_digit($id)){
+            $req ->validate([
+                'categoryparent' => 'required | regex:/^(?!0$).*/'
+            ]);
+            $cateParent = $req->categoryparent;
+            return view('admin.product.update_CateProduct',compact('cateParent','id'));
+        }
+    }
+    public function getUpdateCateProduct($id =0) {
+        if(!empty($id) && ctype_digit($id)){
+            $product = Product::find($id);
+            if(!empty($product)) {
+                return view('admin.product.update_CateProduct', compact('product','id'));
+            }
+        }
+        return view('admin.product.update_CateProduct');
+    }
+    public function postUpdateCateProduct(Request $req, $id = 0){
+        $req ->validate([
+            'categoryproduct' => 'required | regex:/^(?!0$).*/'
+        ]);
+        if(!empty($id) && ctype_digit($id)){
+            $product = Product::find($id);
+        }
+        $cateParent = $req->categoryparent;
+        $cateProduct = $req->categoryproduct;
+        return view('admin.product.update',compact('cateParent','cateProduct','id','product'));
     }
     public function postUpdate(Request $req, $id){
     if(!empty($id) && ctype_digit($id)){
@@ -101,7 +162,7 @@ class ProductController extends Controller
         // Lấy danh sách các size đã chọn và nối chúng thành một chuỗi
         $sizes = is_array($req->input('size')) ? implode(',', $req->input('size')) : $req->input('size', '');
 
-        $product = new Product;
+        $product = Product::find($id);
         $product->code = $req->code;
         $product->name = $req->name;    
         $product->images = $filename;
@@ -116,7 +177,7 @@ class ProductController extends Controller
         $product->price_sell = $req->price_sell;
         $check = $product->save();
         if($check) {
-            return redirect()->route('admin.products.getList',compact('check'))->with('msg','Cập nhật sản phẩm thành công');
+            return redirect()->route('admin.products.getList')->with('msg','Cập nhật sản phẩm thành công');
         }
     }
         return redirect()->route('admin.products.getList');
@@ -133,24 +194,20 @@ class ProductController extends Controller
         }
         return redirect()->route('admin.products.getList')->with('error','Xóa sản phẩm thất bại');
     }
-    // public function getCategoryProduct($categoryId)
-    // {
-    //     $categoryProducts = CategoryProduct::where('category_parent', $categoryId)->get();
-    //     return response()->json($categoryProducts);
-    // }
     public function getCategoryParentProducts(Request $request, $categoryParentId)
     {
-        $categoryParentProducts = CategoryParentProduct::where('category_parent', $categoryParentId)->get();
+    $categoryParentProducts = CategoryParentProduct::where('category_parent', $categoryParentId)->get();
 
-        return view('admin.product.add', ['categoryParentProducts' => $categoryParentProducts]);
+    return response()->json($categoryParentProducts);
     }
 
     public function getCategoryValues(Request $request, $categoryParentId, $categoryProductId)
     {
-        $categoryValues = CategoryValue::whereHas('categoryParentProduct', function($query) use ($categoryParentId, $categoryProductId) {
-            $query->where('category_parent', $categoryParentId)
-                  ->where('category_product', $categoryProductId);
-        })->get();
-        return view('admin.product.add', ['categoryValues' => $categoryValues]);
+    $categoryValues = CategoryValue::whereHas('categoryParentProduct', function($query) use ($categoryParentId, $categoryProductId) {
+        $query->where('category_parent', $categoryParentId)
+              ->where('category_product', $categoryProductId);
+    })->get();
+    
+    return response()->json($categoryValues);
     }
-}
+}  

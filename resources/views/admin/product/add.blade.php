@@ -10,6 +10,15 @@
             <form action="{{route('admin.products.postAdd')}}" method="POST" enctype="multipart/form-data">
                 <div style="display: grid; grid-template-columns: repeat(2, 1fr)">
                     <div class="mb-3">
+                        <label for="" style="color: red">Category Parent *</label>
+                        <select class="form-control w-50" required name="categoryparent" id="category_parent">
+                            <option value="{{$cateParent}}">{{getNameCategoryParent($cateParent)}}</option>
+                        </select>
+                        @error('categoryparent')
+                          <span style="color: red">{{$message}}</span>
+                        @enderror
+                    </div>
+                    <div class="mb-3">
                         <label for="">Code</label>
                         <input type="text" name="code" class="form-control w-50" placeholder="Product Code..." value="{{old('code')}}">
                         @error('code')
@@ -17,16 +26,11 @@
                         @enderror
                     </div>
                     <div class="mb-3">
-                        <label for="">Category Parent</label>
-                        <select class="form-control w-50" required name="category_parent" id="category_parent">
-                            <option value="0">Open this select menu</option>
-                            @if (!empty(getCategoryParent()))
-                                @foreach(getCategoryParent() as $item)
-                                    <option value="{{$item->id}}">{{$item->name}}</option>
-                                @endforeach
-                            @endif
+                        <label for="" style="color: red">Category Product *</label>
+                        <select class="form-control w-50" required name="categoryproduct" id="category_product">
+                            <option value="{{$cateProduct}}">{{getNameCategoryProduct($cateProduct)}}</option>
                         </select>
-                        @error('category')
+                        @error('categoryproduct')
                           <span style="color: red">{{$message}}</span>
                         @enderror
                     </div>
@@ -38,17 +42,21 @@
                         @enderror
                     </div>
                     <div class="mb-3">
-                        <label for="">Category Product</label>
-                        <select class="form-control w-50" required name="category_product" id="category_product">
+                        <label for="" style="color: red">Category Value *</label>
+                        <select class="form-control w-50" required name="categoryvalue" id="category_value">
                             <option value="0">Open this select menu</option>
-                            @if(isset($categoryParentProducts))
-                                @foreach($categoryParentProducts as $item)
-                                    <option value="{{ $item->category_product }}">{{ getNameCategoryProduct($item->category_product) }}</option>
+                            @if(isset($cateParent))
+                            @if(isset($cateProduct))
+                            @if (!empty(getCategoryValueofProduct($cateParent,$cateProduct)))
+                                @foreach(getCategoryValueofProduct($cateParent,$cateProduct) as $item)
+                                    <option value="{{$item->id}}">{{getNameCategoryValue($item->id)}}</option>
                                 @endforeach
                             @endif
-                        </select>
-                        @error('category')
-                          <span style="color: red">{{$message}}</span>
+                            @endif
+                            @endif
+                        </select> 
+                        @error('categoryvalue')
+                          <span style="color: red">{{$message}}</span>                        
                         @enderror
                     </div>
                     <div class="mb-3">
@@ -58,20 +66,7 @@
                             <span style="color: red">{{$message}}</span>
                         @enderror
                     </div>
-                    <div class="mb-3">
-                        <label for="">Category Value</label>
-                        <select class="form-control w-50" required name="category_value" id="category_value">
-                            <option value="0">Open this select menu</option>
-                            @if(isset($categoryValues))
-                                @foreach($categoryValues as $item)
-                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                @endforeach
-                            @endif
-                        </select>
-                        @error('category')
-                          <span style="color: red">{{$message}}</span>
-                        @enderror
-                    </div>
+                    
                     <div class="mb-3">
                         <label for="">Size</label>
                         <div class="form-check">
@@ -153,12 +148,17 @@
     <script>
         document.getElementById('category_parent').onchange = function(){
             var categoryParentId = this.value;
-
+    
             var xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function(){
                 if(xhr.readyState === XMLHttpRequest.DONE){
                     if(xhr.status === 200){
-                        document.getElementById('category_product').innerHTML = xhr.responseText;
+                        var data = JSON.parse(xhr.responseText);
+                        var options = '';
+                        data.forEach(function(item) {
+                            options += '<option value="' + item.id + '">' + item.name + '</option>';
+                        });
+                        document.getElementById('category_product').innerHTML = options;
                     } else {
                         console.log('Request failed!');
                     }
@@ -167,15 +167,21 @@
             xhr.open('GET','/admin/products/get-category-products/' + categoryParentId, true);
             xhr.send();
         };
+    
         document.getElementById('category_product').onchange = function(){
             var categoryProductId = this.value;
             var categoryParentId = this.value;
-
+    
             var xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function(){
                 if(xhr.readyState === XMLHttpRequest.DONE){
                     if(xhr.status === 200){
-                        document.getElementById('category_value').innerHTML = xhr.responseText;
+                        var data = JSON.parse(xhr.responseText);
+                        var options = '';
+                        data.forEach(function(item) {
+                            options += '<option value="' + item.id + '">' + item.name + '</option>';
+                        });
+                        document.getElementById('category_value').innerHTML = options;
                     } else {
                         console.log('Request failed!');
                     }
@@ -185,5 +191,6 @@
             xhr.send(); 
         };
     </script>
+    
 @endsection
 

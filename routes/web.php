@@ -11,6 +11,8 @@ use App\Http\Controllers\Admin\RankController as AdminRankController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Client\DashboardController as ClientDashboardController;
 use App\Http\Controllers\Client\Product\filterController as ClientFilterController;
+use App\Http\Controllers\Client\Product\productController as ClientProductDetailController;
+use App\Http\Controllers\Client\Cart\cartController as ClientCartController;
 
 use App\Http\Controllers\MyAuth\AuthController;
 
@@ -23,10 +25,21 @@ Route::prefix('admin')->name('admin.')->group(function (){
     Route::get('/',[AdminDashboardController::class, 'index'])->name('index');
     Route::prefix('products')->name('products.')->group(function () {
         Route::get('/', [AdminProductController::class, 'getList'])->name('getList');
+
+        Route::get('/addCateParent', [AdminProductController::class, 'getAddCateParent'])->name('getAddCateParent');
+        Route::post('/addCateParent', [AdminProductController::class, 'postAddCateParent'])->name('postAddCateParent');
+        Route::get('/addCateProduct', [AdminProductController::class, 'getAddCateProduct'])->name('getAddCateProduct');
+        Route::post('/addCateProduct', [AdminProductController::class, 'postAddCateProduct'])->name('postAddCateProduct');
         Route::get('/add', [AdminProductController::class, 'getAdd'])->name('getAdd');
         Route::post('/add', [AdminProductController::class, 'postAdd'])->name('postAdd');
+
+        Route::get('/updateCateParent/{id}', [AdminProductController::class, 'getUpdateCateParent'])->name('getUpdateCateParent');
+        Route::post('/updateCateParent/{id}', [AdminProductController::class, 'postUpdateCateParent'])->name('postUpdateCateParent');
+        Route::get('/updateCateProduct/{id}', [AdminProductController::class, 'getUpdateCateProduct'])->name('getUpdateCateProduct');
+        Route::post('/updateCateProduct/{id}', [AdminProductController::class, 'postUpdateCateProduct'])->name('postUpdateCateProduct');
         Route::get('/update/{id}', [AdminProductController::class, 'getUpdate'])->name('getUpdate');
         Route::post('/update/{id}', [AdminProductController::class, 'postUpdate'])->name('postUpdate');
+
         Route::get('deleteItem/{id}', [ AdminProductController::class, 'deleteItem'])->name('delete');
         // Route::get('/get-category-products/{categoryId}', [AdminProductController::class, 'getCategoryProduct']);
         Route::get('/get-category-parent-products/{categoryParentId}', [AdminProductController::class, 'getCategoryParentProducts']);
@@ -45,18 +58,24 @@ Route::prefix('admin')->name('admin.')->group(function (){
         Route::get('/updateCategoryProduct/{id}', [AdminCategoryProductController::class, 'getUpdate'])->name('getUpdateCategoryProduct');
         Route::post('/updateCategoryProduct/{id}', [AdminCategoryProductController::class, 'postUpdate'])->name('postUpdateCategoryProduct');
         Route::get('/deleteCateProduct/{id}', [AdminCategoryProductController::class, 'deleteItem'])->name('deleteCatePro');
+        
         Route::get('/categoryValueList', [AdminCategoryValueController::class, 'getList'])->name('categoryValueList');
+        Route::get('/categoryValueParent', [AdminCategoryValueController::class, 'getAddCategoryParent'])->name('getAddCategoryParent');
+        Route::post('/categoryValueParent', [AdminCategoryValueController::class, 'postAddCategoryParent'])->name('postAddCategoryParent');
         Route::get('/categoryValue', [AdminCategoryValueController::class, 'getAdd'])->name('categoryValueAdd');
         Route::post('/categoryValue', [AdminCategoryValueController::class, 'postAdd'])->name('postcategoryValue');
+        Route::get('/updateCategoryValueParent/{id}', [AdminCategoryValueController::class, 'getUpdateCategoryParent'])->name('getUpdateCategoryValueParent');
+        Route::post('/updateCategoryValueParent/{id}', [AdminCategoryValueController::class, 'postUpdateCategoryParent'])->name('postUpdateCategoryValueParent');
         Route::get('/updateCategoryValue/{id}', [AdminCategoryValueController::class, 'getUpdate'])->name('getUpdateCategoryValue');
         Route::post('/updateCategoryValue/{id}', [AdminCategoryValueController::class, 'postUpdate'])->name('postUpdateCategoryValue');
         Route::get('/deleteCateValue/{id}', [AdminCategoryValueController::class, 'deleteItem'])->name('deleteCateValue');
+        
         Route::get('/categoryParentProductList', [AdminCategoryParentProductController::class, 'getList'])->name('getCategoryParentProduct');
         Route::get('/categoryParentProduct', [AdminCategoryParentProductController::class, 'getAdd'])->name('categoryParentProductAdd');
         Route::post('/categoryParentProduct', [AdminCategoryParentProductController::class, 'postAdd'])->name('postcategoryParentProduct');
         Route::get('/updateCategoryParentProduct/{id}', [AdminCategoryParentProductController::class, 'getUpdate'])->name('getUpdateCategoryParentProduct');
         Route::post('/updateCategoryParentProduct/{id}', [AdminCategoryParentProductController::class, 'postUpdate'])->name('postUpdateCategoryParentProduct');
-        Route::get('/deleteCateValue/{id}', [AdminCategoryParentProductController::class, 'deleteItem'])->name('deleteCateParentProduct');
+        Route::get('/deleteCateParentProduct/{id}', [AdminCategoryParentProductController::class, 'deleteItem'])->name('deleteCateParentProduct');
         Route::get('/get-category-products/{categoryParentId}', [AdminCategoryValueController::class, 'getCategoryProduct']);
     });
     // Route::prefix('brands')->name('brands.')->group(function () {
@@ -83,5 +102,10 @@ Route::post('register', [AuthController::class,'register'])->name('register');
 Route::get('/', [ClientDashboardController::class, 'home'])->name('home');
 Route::get('/navbar/{cateParent}/{catePro}', [ClientDashboardController::class, 'navbar'])->name('navbar');
 Route::get('/kid', [ClientDashboardController::class, 'kid'])->name('kid');
-Route::get('/filter', [ClientFilterController::class, 'filter'])->name('filter');
-
+Route::get('/filter/{cateParent}/{catePro}', [ClientFilterController::class, 'filter'])->name('filter');
+Route::get('/filterCategory/{cateParent}/{catePro}/{cateValue}', [ClientFilterController::class, 'filterCategory'])->name('filterCategory');
+Route::get('/detail/{id}', [ClientProductDetailController::class,'detail'])->name('detail');
+Route::get('/detail/addCart/{idUser}/{idProduct}/{inputAmount}/{selectedSize}', [ClientCartController::class, 'addCart'])->name('addCart');
+Route::get('/getCart', [ClientCartController::class, 'getCart'])->name('getCart');
+Route::post('/update-cart', [ClientCartController::class, 'updateCart'])->name('update-cart');
+Route::post('/remove-cart', [ClientCartController::class, 'removeCart'])->name('remove-cart');

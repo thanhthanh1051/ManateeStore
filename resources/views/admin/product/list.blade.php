@@ -60,7 +60,7 @@
                                         <td>{{$item->price_buy}}</td>
                                         <td>{{$item->price_sell}}</td>
                                         <td>{{$item->created_at}}</td>
-                                        <td><a href="{{route('admin.products.getUpdate',['id'=>$item ->id])}}" class="btn btn-warning">Sửa</a></td>
+                                        <td><a href="{{route('admin.products.getUpdateCateParent',['id'=>$item ->id])}}" class="btn btn-warning">Sửa</a></td>
                                         <td><a href="{{route('admin.products.delete',['id'=>$item ->id])}}" class="btn btn-danger">Xóa</a></td>
                                     </tr>
                                 @endforeach

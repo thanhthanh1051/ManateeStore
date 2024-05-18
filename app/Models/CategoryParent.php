@@ -31,14 +31,23 @@ class CategoryParent extends Model
         ->where('id',$id)
         ->update($data);
     }
-    public function categoryProducts()
+    public function categoryValues()
     {
-        return $this->hasMany(CategoryProduct::class, 'category_parent', 'id');
+        return $this->hasMany(CategoryValue::class, 'category_parent', 'id');
     }
     public function canBeDeleted()
     {
         // Kiểm tra xem mô hình có liên kết với bất kỳ bản ghi nào trong bảng categoryproduct hay không
-        return $this->categoryProducts()->count() === 0;
+        return $this->categoryValues()->count() === 0;
+    }
+    public function categoryParentProduct()
+    {
+        return $this->hasMany(CategoryParentProduct::class, 'category_parent', 'id');
+    }
+    public function canBeDeletedParentProduct()
+    {
+        // Kiểm tra xem mô hình có liên kết với bất kỳ bản ghi nào trong bảng categoryproduct hay không
+        return $this->categoryParentProduct()->count() === 0;
     }
     public function deleteItem($id){
         return DB::table($this->table)->where('id',$id)->delete();

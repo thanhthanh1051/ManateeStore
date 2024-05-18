@@ -3,9 +3,12 @@ use App\Models\CategoryParent;
 use App\Models\CategoryProduct;
 use App\Models\CategoryValue;
 use App\Models\CategoryParentProduct;
-// use App\Models\Brand;
 use App\Models\Product;
-
+use App\Models\Cart;
+function getNameProduct($id = 0){
+    $product = Product::find($id);
+    return $product->name;
+}
 function getCategoryParent(){
     $categories = new CategoryParent();
     return $categories->getList();
@@ -31,7 +34,7 @@ function getNameCategoryParent($id){
 function getNameCategoryProduct($id){
     $category = new CategoryProduct();
     $getname = $category->where('id', $id)->first();
-    if($category !== null){
+    if($getname !== null){
         return $getname->name;
     }
     else{
@@ -41,55 +44,34 @@ function getNameCategoryProduct($id){
 function getNameCategoryValue($id){
     $category = new CategoryValue();
     $getname = $category->where('id', $id)->first();
-    if($category !== null){
-        return $category->name;
+    if($getname !== null){
+        return $getname->name;
     }
     else{
         return "Category value empty";
     }
 }
-// function cateProductFParent($id){
-//     $category = CategoryProduct::where('category_parent',$id)->get();
-//     if($category != null){
-//         return $category;
-//     }
-//     else{
-//         return "Category empty";
-//     }
-// }
+function getCategoryProductWParent($categoryParentId){
+    $categoryProducts = CategoryParentProduct::where('category_parent', $categoryParentId)->get();
+    return $categoryProducts;
+}
+function getCategoryValueofProduct($cateParent, $cateProduct){
+    $categoryValue = CategoryValue::where('category_parent', $cateParent)
+                                    ->where('category_product', $cateProduct)
+                                    ->get();
+    return $categoryValue;
+}
 
-// function getBrand(){
-//     $brands = Brand::all();
-//     return $brands;
-// }
-// function getProduct($id){
-//     $product = Product::where('category_id', $id)->get();
-//     if($product !== null){
-//         return $product;
-//     }
-//     else{
-//         return "Product empty";
-//     }
-// }
-// function getProductFCate($id){
-//     $category_value = CategoryValue::where('category_product', $id)->get();
-//     if($category_value != null){
-//         return $category_value;
-//     }
-//     else{
-//         return "Empty";
-//     }
-// }
 function typeSize($id){
     try{
         if($id == "1"){
-            return "Size S";
+            return "S";
         }
         elseif($id == "2"){
-            return "Size M";
+            return "M";
         }
         elseif($id == "3"){
-            return "Size L";
+            return "L";
         }
         else{
             return "Unknown Size";
@@ -97,4 +79,63 @@ function typeSize($id){
     }catch(Exception $e){
         return "Empty";
     }
+}
+function cateProductFParent($idCateParent){
+    $cateParentProduct = CategoryParentProduct::where('category_parent', $idCateParent)->get();
+    return $cateParentProduct;
+}
+function getProductToCategoryValue($id){
+
+}
+function getCategoryValueToParentProduct($cateParent,$cateProduct){
+    $cateValue = CategoryValue::where('category_parent', $cateParent)
+                            ->where('category_product', $cateProduct)
+                            ->get();
+                            return $cateValue;
+}
+function getAmountCart(){
+    if(isset(Auth::user()->id)){
+        $user = Auth::user()->id;
+        $cart = Cart::where('user_id',$user)->sum('amount');
+        // if($cart && $cart->amount != null){
+        //     $amount = $cart->amount;
+        //     return $amount;
+        // }
+        return $cart;
+    }
+    return 0;
+}
+function getItemAmountCart($idProduct){
+    if(Auth::check()){
+        $user = Auth::user()->id;
+        $cart = Cart::where('user_id', $user)
+                    ->where('product_id', $idProduct)
+                    ->first();
+        $amount = $cart->amount;
+        return $amount;
+    }
+    return 0;
+}
+
+function getItemSizeCart($idProduct){
+    if(Auth::check()){
+        $user = Auth::user()->id;
+        $cart = Cart::where('user_id', $user)
+                    ->where('product_id', $idProduct)
+                    ->first();
+        $size = $cart->size;
+        if($size == "1"){
+            return "S";
+        }
+        elseif($size == "2"){
+            return "M";
+        }
+        elseif($size == "3"){
+            return "L";
+        }
+        else{
+            return "Unknown Size";
+        }
+    }
+    return 0;
 }

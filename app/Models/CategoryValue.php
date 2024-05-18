@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 use App\Models\Product;
+use App\Models\CategoryParentProduct;
 class CategoryValue extends Model
 {
     use HasFactory;
@@ -38,7 +39,7 @@ class CategoryValue extends Model
     // Định nghĩa quan hệ với bảng categoryvalue
     public function products()
     {
-        return $this->hasMany(Product::class, 'category_id', 'id');
+        return $this->hasMany(Product::class, 'category_value', 'id');
     }
     public function canBeDeleted()
     {
@@ -48,5 +49,9 @@ class CategoryValue extends Model
     public function deleteItem($id){
         return DB::table($this->table)
         ->where('id',$id)->delete();
+    }
+    public function categoryParentProduct()
+    {
+        return $this->belongsTo(CategoryParentProduct::class, 'category_id');
     }
 }

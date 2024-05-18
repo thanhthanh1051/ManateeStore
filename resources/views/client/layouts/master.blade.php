@@ -105,36 +105,35 @@
                                         <span class="tooltiptext">Wishlist</span>
                                     </div>
                                  </a>
-                                 @if (Auth::user())
+                                 {{-- @if (Auth::user())
                                     <a href="" class="icon-wrap">
-                                        {{-- {{route('cart')}} --}}
+                                        <div class="icon">
+                                            <span class="material-symbols-outlined">
+                                                shopping_bag
+                                            </span> --}}
+                                            {{-- @if (!empty(Session::has('Cart'))) --}}
+                                                {{-- <span id="icon-amount-orders"></span> --}}
+                                            {{-- @else
+                                                <span id="icon-amount-orders">0</span>
+                                            @endif --}}
+                                            {{-- <span class="tooltiptext">Cart</span>
+                                        </div>
+                                    </a>
+                                 @else --}}
+                                    <a href="{{route('getCart')}}" class="icon-wrap" id="init-login-form-2">
                                         <div class="icon">
                                             <span class="material-symbols-outlined">
                                                 shopping_bag
                                             </span>
-                                            @if (!empty(Session::has('Cart')))
-                                                <span id="icon-amount-orders">{{Session::get('Cart')->totalQuantity}}</span>
-                                            @else
-                                                <span id="icon-amount-orders">0</span>
-                                            @endif
+                                            {{-- @if (!empty(Session::has('Cart')))
+                                                <span id="icon-amount-orders"></span>
+                                            @else --}}
+                                                <span id="icon-amount-orders">{{getAmountCart()}}</span>
+                                            {{-- @endif --}}
                                             <span class="tooltiptext">Cart</span>
                                         </div>
                                     </a>
-                                 @else
-                                    <a href="#" class="icon-wrap" id="init-login-form-2">
-                                        <div class="icon">
-                                            <span class="material-symbols-outlined">
-                                                shopping_bag
-                                            </span>
-                                            @if (!empty(Session::has('Cart')))
-                                                <span id="icon-amount-orders">{{Session::get('Cart')->totalQuantity}}</span>
-                                            @else
-                                                <span id="icon-amount-orders">0</span>
-                                            @endif
-                                            <span class="tooltiptext">Cart</span>
-                                        </div>
-                                    </a>
-                                 @endif
+                                 {{-- @endif --}}
                             </div>
                         </div>
                     </div>
@@ -194,41 +193,13 @@
                                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                                                             @if(!empty(cateProductFParent($item->id)))
                                                                 @foreach(cateProductFParent($item->id) as $catepro)
-                                                                    <li><a class="dropdown-item" href="{{route('navbar',['cateParent'=>$item->id,'catePro'=>$catepro->id])}}">{{$catepro->name}}</a></li>
+                                                                    <li><a class="dropdown-item" href="{{route('navbar',['cateParent'=>$item->id,'catePro'=>$catepro->category_product])}}">{{getNameCategoryProduct($catepro->category_product)}}</a></li>
                                                                 @endforeach
                                                             @endif
                                                         </ul>
                                                     </li>
                                                     @endforeach
                                                 @endif
-                                                {{-- <li class="menu-item">
-                                                    <a href="" class="rm-rf underline-hover-effect">
-                                                        <div class="menu-item-wrap">
-                                                            <span class="menu-item-title">Men</span>
-                                                        </div>
-                                                    </a>
-                                                </li>
-                                                <li class="menu-item">
-                                                    <a href="{{route('kid')}}" class="rm-rf underline-hover-effect">
-                                                        <div class="menu-item-wrap">
-                                                            <span class="menu-item-title">Kids</span>
-                                                        </div>
-                                                    </a>
-                                                </li>
-                                                <li class="menu-item">
-                                                    <a href="" class="rm-rf underline-hover-effect">
-                                                        <div class="menu-item-wrap">
-                                                            <span class="menu-item-title">Baby</span>
-                                                        </div>
-                                                    </a>
-                                                </li> --}}
-                                                {{-- <li class="menu-item">
-                                                    <a href="{{route('more')}}" class="rm-rf underline-hover-effect">
-                                                        <div class="menu-item-wrap">
-                                                            <span class="menu-item-title">More</span>
-                                                        </div>
-                                                    </a>
-                                                </li> --}}
                                             </ul>
                                         </div>
                                     </div>
