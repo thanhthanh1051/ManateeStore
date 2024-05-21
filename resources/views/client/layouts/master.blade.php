@@ -259,8 +259,7 @@
                             </div>
                         </div>
 
-                        <form id="form-logout" action="" method="POST" style="margin: 20px 20px 0 10px">
-                            {{-- {{route('logout')}} --}}
+                        <form id="form-logout" {{route('logout')}} action="" method="POST" style="margin: 20px 20px 0 10px">                            
                             <button class="btn btn-dark" type="submit" style="width: 100%; font-weight:bold">Logout</button>
                             @csrf
                         </form>

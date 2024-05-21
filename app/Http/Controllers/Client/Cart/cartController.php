@@ -100,8 +100,9 @@ class cartController extends Controller
             $cartItem->save();
 
             $totalAmount = Cart::where('user_id', Auth::id())->sum('amount');
+            $cartSummary = $this->getCartSummaryData();
 
-            return response()->json(['success' => true, 'totalAmount' => $totalAmount]);
+            return response()->json(['success' => true, 'totalAmount' => $totalAmount, 'cartSummary' => $cartSummary]);
         }
 
         return response()->json(['success' => false], 404);
@@ -122,10 +123,59 @@ class cartController extends Controller
             $cartItem->delete();
 
             $totalAmount = Cart::where('user_id', Auth::id())->sum('amount');
+            $cartSummary = $this->getCartSummaryData();
 
-            return response()->json(['success' => true, 'totalAmount' => $totalAmount]);
+            return response()->json(['success' => true, 'totalAmount' => $totalAmount, 'cartSummary' => $cartSummary]);
         }
 
         return response()->json(['success' => false], 404);
+    }
+    // public function getCartSummary() {
+    //     $cartItems = Cart::where('user_id', Auth::id())->get();
+    //     $products = [];
+    //     $totalAmount = 0;
+    
+    //     foreach ($cartItems as $cartItem) {
+    //         $product = Product::find($cartItem->product_id);
+    //         if ($product) {
+    //             $productData = [
+    //                 'name' => $product->name,
+    //                 'price' => $product->price_sell,
+    //                 'quantity' => $cartItem->amount,
+    //                 'size' => $cartItem->size
+    //             ];
+    //             $products[] = $productData;
+    //             $totalAmount += $product->price_sell * $cartItem->amount;
+    //         }
+    //     }
+    
+    //     return response()->json([
+    //         'products' => $products,
+    //         'totalAmount' => $totalAmount
+    //     ]);
+    // }
+    public function getCartSummaryData(){
+        $cartItems = Cart::where('user_id', Auth::id())->get();
+        $products = [];
+        $totalAmount = 0;
+
+        foreach($cartItems as $cartItem){
+            $product = Product::find($cartItem -> product_id);
+            if($product){
+                $productData = [
+                    'id' => $product->id,
+                    'name' => $product->name,                                                       
+                    'price' => $product->price_sell,
+                    'quantity' => $cartItem->amount,
+                    'size' => $cartItem->size
+                ];
+                $products[] = $productData;
+                $totalAmount += $product->price_sell * $cartItem->amount;
+            }
+        }
+        return [
+            'products' => $products,
+            'total' => $totalAmount
+        ];
     }
 }

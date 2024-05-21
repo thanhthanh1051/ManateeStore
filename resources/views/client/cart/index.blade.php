@@ -28,7 +28,9 @@
                   <div class="col-lg-5 col-md-6 mb-4 mb-lg-0">
                     <!-- Data -->
                     <p><strong>{{$item->name}}</strong></p>
-                    <p>Color: {{$item->color}}</p>
+                    <p>Color: 
+                      <span style="width: 30px; height:20px; background-color: {{$item->color}}; display: inline-block"></span>
+                    </p>
 
                     <p>Size: {{typeSize($item->cart_size)}}
                     {{-- @php
@@ -114,11 +116,17 @@
             </div>
             <div class="card-body">
               <ul class="list-group list-group-flush">
+                @if(isset($products))
+                @foreach($products as $item)
                 <li
-                  class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
-                  Products
-                  <span>$53.98</span>
+                  class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0" data-item-summary-id="{{ $item->id }}">
+                  {{$item->name}}
+                  <span class="summary-product-total">${{$item->cart_amount * $item->price_sell}}.00</span>
                 </li>
+                <div id="summary-products">
+                @endforeach
+                @endif
+                </div>
                 <li class="list-group-item d-flex justify-content-between align-items-center px-0">
                   Shipping
                   <span>Gratis</span>
@@ -131,7 +139,7 @@
                       <p class="mb-0">(including VAT)</p>
                     </strong>
                   </div>
-                  <span><strong>$53.98</strong></span>
+                  <span class="summary-total-amount"><strong>$53.98</strong></span>
                 </li>
               </ul>
   
@@ -195,6 +203,7 @@ function updateCartDatabase(itemId, size, quantity) {
         success: function(response) {
             console.log('Cart updated successfully');
             updateCartIcon(response.totalAmount); // Cập nhật biểu tượng giỏ hàng
+            updateSummary(response.cartSummary); //Cập nhật phần Summary
         },
         error: function(xhr, status, error) {
             console.error('Error updating cart:', error);
@@ -206,6 +215,18 @@ function updateCartIcon(totalAmount) {
     var totalItemCart = document.getElementById('total-item-cart');
     cartIcon.textContent = totalAmount;
     totalItemCart.textContent = totalAmount;
+}
+
+function updateSummary(cartSummary){
+  cartSummary.products.forEach(function(product){
+    var productElement = document.querySelector('[data-item-summary-id="'+ product.id + '"] .summary-product-total');
+    if (productElement) {
+            productElement.textContent = `$${(product.price * product.quantity).toFixed(2)}`;
+        }
+  });
+
+  var totalAmountElement = document.querySelector('.summary-total-amount strong');
+  totalAmountElement.textContent = `$${cartSummary.total.toFixed(2)}`;
 }
 function removeCart(itemId, itemSize){
   $.ajax({
@@ -220,7 +241,13 @@ function removeCart(itemId, itemSize){
          
                 $('#item-' + itemId).remove();
                 updateCartIcon(response.totalAmount);
-            
+                updateSummary(response.cartSummary); // Cập nhật phần Summary
+
+                 // Xóa phần tử sản phẩm khỏi phần tổng kết
+                 var summaryProductElement = document.querySelector('[data-item-summary-id="' + itemId + '"]');
+                if (summaryProductElement) {
+                    summaryProductElement.remove();
+                }
         },
         error: function(xhr, status, error) {
             console.error('Error updating cart:', error);

@@ -98,6 +98,7 @@ Route::prefix('admin')->name('admin.')->group(function (){
 
 // Routes Client
 Route::post('login', [AuthController::class,'login'])->name('login');
+Route::post('logout', [AuthController::class,'logout'])->name('logout');
 Route::post('register', [AuthController::class,'register'])->name('register');
 Route::get('/', [ClientDashboardController::class, 'home'])->name('home');
 Route::get('/navbar/{cateParent}/{catePro}', [ClientDashboardController::class, 'navbar'])->name('navbar');
@@ -108,4 +109,5 @@ Route::get('/detail/{id}', [ClientProductDetailController::class,'detail'])->nam
 Route::get('/detail/addCart/{idUser}/{idProduct}/{inputAmount}/{selectedSize}', [ClientCartController::class, 'addCart'])->name('addCart');
 Route::get('/getCart', [ClientCartController::class, 'getCart'])->name('getCart');
 Route::post('/update-cart', [ClientCartController::class, 'updateCart'])->name('update-cart');
+Route::get('/cart-summary', [ClientCartController::class, 'getCartSummary'])->name('cart-summary');
 Route::post('/remove-cart', [ClientCartController::class, 'removeCart'])->name('remove-cart');

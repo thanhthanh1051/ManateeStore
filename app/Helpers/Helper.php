@@ -139,3 +139,15 @@ function getItemSizeCart($idProduct){
     }
     return 0;
 }
+function getTotalPrice(){
+    if(Auth::check()){
+        $user = Auth::user()->id;
+        $cart = Cart::where('user_id', $user)
+                    ->first();
+        $key = 0;
+        foreach($cart as $item){
+            $key = $item->prouduct * $item->amount;
+        }
+    }
+    return $key;
+}
