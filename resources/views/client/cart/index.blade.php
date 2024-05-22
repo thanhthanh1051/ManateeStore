@@ -131,15 +131,40 @@
                   Shipping
                   <span>Gratis</span>
                 </li>
+
+                <div class="content-bv" style="margin:0; padding-bottom:0">
+                  <div class="head-content">
+                      <h4 class="hcb-title" style="color: rgb(36, 36, 36);">Voucher</h4>
+                      <i class="hcb-title" style="font-size: 12px; color:red">*Tối đa chọn 1</i>
+                    </div>
+                      <form method="POST" action="">
+                        <div class="head-content">
+                          <div class="input-group">
+                            <input type="text" name="voucher" placeholder="Nhập mã khuyến mãi..." class="form-control-lg" value="">
+                            <div class="input-group-append">
+                                <button type="submit" class="btn-lg btn-primary">Add</button>
+                            </div>
+                          </div>
+                        </div>
+                        @csrf
+                      </form>
+                    </div>
+                  </div>
+                  <div class="head-content mb-3">
+                      <span id="voucher-link-1" style="font-size: 14px; color: blue">Select Your Voucher</span>
+                  </div>
+                </div>
+
+
                 <li
                   class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
-                  <div>
+                  <div class="ml-2">
                     <strong>Total amount</strong>
                     <strong>
                       <p class="mb-0">(including VAT)</p>
                     </strong>
                   </div>
-                  <span class="summary-total-amount"><strong>$53.98</strong></span>
+                  <span class="summary-total-amount mr-2"><strong>${{getTotalPrice()}}.00</strong></span>
                 </li>
               </ul>
   

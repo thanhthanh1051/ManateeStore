@@ -142,12 +142,14 @@ function getItemSizeCart($idProduct){
 function getTotalPrice(){
     if(Auth::check()){
         $user = Auth::user()->id;
-        $cart = Cart::where('user_id', $user)
-                    ->first();
+        $cart = Cart::where('user_id', $user)->get();
         $key = 0;
         foreach($cart as $item){
-            $key = $item->prouduct * $item->amount;
+            $product = Product::where('id', $item->product_id)->first();
+            $key += $product->price_sell * $item->amount;
         }
+    }else{
+        $key = 0;
     }
     return $key;
 }
