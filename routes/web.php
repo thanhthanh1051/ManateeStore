@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\CategoryValueController as AdminCategoryValueCont
 use App\Http\Controllers\Admin\CategoryParentProductController as AdminCategoryParentProductController;
 // use App\Http\Controllers\Admin\BrandController as AdminBrandController;
 use App\Http\Controllers\Admin\RankController as AdminRankController;
+use App\Http\Controllers\Admin\DiscountController as AdminDiscountController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Client\DashboardController as ClientDashboardController;
 use App\Http\Controllers\Client\Product\filterController as ClientFilterController;
@@ -86,13 +87,21 @@ Route::prefix('admin')->name('admin.')->group(function (){
     //     Route::post('/update/{id}', [AdminBrandController::class, 'postUpdate'])->name('postUpdate');
     //     Route::get('deleteItem/{id}', [AdminBrandController::class, 'deleteItem'])->name('delete');
     // });
-    Route::prefix('ranks')->name('rank.')->group(function () {
+    Route::prefix('ranks')->name('ranks.')->group(function () {
         Route::get('/', [AdminRankController::class, 'getList'])->name('getList');
         Route::get('/add', [AdminRankController::class, 'getAdd'])->name('getAdd');
         Route::post('/add', [AdminRankController::class, 'postAdd'])->name('postAdd');
         Route::get('/update/{id}', [AdminRankController::class, 'getUpdate'])->name('getUpdate');
         Route::post('/update/{id}', [AdminRankController::class, 'postUpdate'])->name('postUpdate');
         Route::get('deleteItem/{id}', [AdminRankController::class, 'deleteItem'])->name('delete');
+    });
+    Route::prefix('discounts')->name('discounts.')->group(function () {
+        Route::get('/', [AdminDiscountController::class, 'getList'])->name('getList');
+        Route::get('/add', [AdminDiscountController::class, 'getAdd'])->name('getAdd');
+        Route::post('/add', [AdminDiscountController::class, 'postAdd'])->name('postAdd');
+        Route::get('/update/{id}', [AdminDiscountController::class, 'getUpdate'])->name('getUpdate');
+        Route::post('/update/{id}', [AdminDiscountController::class, 'postUpdate'])->name('postUpdate');
+        Route::get('deleteItem/{id}', [AdminDiscountController::class, 'deleteItem'])->name('delete');
     });
 });
 
@@ -111,3 +120,7 @@ Route::get('/getCart', [ClientCartController::class, 'getCart'])->name('getCart'
 Route::post('/update-cart', [ClientCartController::class, 'updateCart'])->name('update-cart');
 Route::get('/cart-summary', [ClientCartController::class, 'getCartSummary'])->name('cart-summary');
 Route::post('/remove-cart', [ClientCartController::class, 'removeCart'])->name('remove-cart');
+Route::post('/check-discount', [ClientCartController::class, 'checkDiscount'])->name('check-discount');
+Route::get('/checkout', [ClientCartController::class, 'checkout'])->name('checkout');
+Route::get('/info', [ClientCartController::class, 'info'])->name('info');
+Route::post('/info', [ClientCartController::class, 'postInfo'])->name('postInfo');

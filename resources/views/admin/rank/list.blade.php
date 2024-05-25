@@ -24,8 +24,8 @@
                         <th>Description</th>
                         <th width="20%">Created_At</th>
                         <th width="20%">Updated_At</th>
-                        <th width ="2%"></th>
-                        <th width ="2%"></th>
+                        <th width ="2%">Update</th>
+                        <th width ="2%">Delete</th>
 
                     </tr>
                 </thead>
@@ -40,8 +40,8 @@
                                     <td>{{$item -> description}}</td>
                                     <td>{{$item -> created_at}}</td>
                                     <td>{{$item -> updated_at}}</td>
-                                    <td><a href="{{route('admin.rank.getUpdate',['id'=>$item ->id])}}" class="btn btn-warning">Sửa</a></td>
-                                    <td><a href="{{route('admin.rank.delete',['id'=>$item ->id])}}" class="btn btn-danger">Xóa</a></td>
+                                    <td><a href="{{route('admin.ranks.getUpdate',['id'=>$item ->id])}}" class="btn btn-warning">Update</a></td>
+                                    <td><a href="{{route('admin.ranks.delete',['id'=>$item ->id])}}" class="btn btn-danger">Delete</a></td>
                                 </tr>
                             @endforeach
                         @else

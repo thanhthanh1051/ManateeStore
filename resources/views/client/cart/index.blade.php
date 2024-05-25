@@ -60,8 +60,8 @@
                       </button>
     
                       <div data-mdb-input-init class="form-outline">
-                        <input id="form1" min="1" max="{{$item->amount}}" name="quantity" value="{{$item->cart_amount}}" type="number" class="form-control" data-price="{{$item->price_sell}}" data-size="{{ $item->cart_size }}" data-max-amount="{{$item->amount}}" data-item-id="{{$item->id}}" oninput="updateTotal(this)" />
-                        <label class="form-label" for="form1">Quantity</label>
+                        <input id="form1" min="1" max="{{$item->amount}}" name="quantity" value="{{$item->cart_amount}}" type="number" class="form-control" style="font-size: 15px" data-price="{{$item->price_sell}}" data-size="{{ $item->cart_size }}" data-max-amount="{{$item->amount}}" data-item-id="{{$item->id}}" oninput="updateTotal(this)" />
+                        {{-- <label class="form-label" for="form1">Quantity</label> --}}
                       </div>
     
                       <button data-mdb-button-init data-mdb-ripple-init class="btn btn-primary px-3 ms-2"
@@ -137,12 +137,12 @@
                       <h4 class="hcb-title" style="color: rgb(36, 36, 36);">Voucher</h4>
                       <i class="hcb-title" style="font-size: 12px; color:red">*Tối đa chọn 1</i>
                     </div>
-                      <form method="POST" action="">
+                      <form method="POST" action="{{route("check-discount")}}">
                         <div class="head-content">
                           <div class="input-group">
                             <input type="text" name="voucher" placeholder="Nhập mã khuyến mãi..." class="form-control-lg" value="">
                             <div class="input-group-append">
-                                <button type="submit" class="btn-lg btn-primary">Add</button>
+                                <button type="submit" class="btn-lg btn-primary btn-discount">Add</button>
                             </div>
                           </div>
                         </div>
@@ -153,9 +153,19 @@
                   <div class="head-content mb-3">
                       <span id="voucher-link-1" style="font-size: 14px; color: blue">Select Your Voucher</span>
                   </div>
+              
+                @if(session('discount'))
+                <li
+                class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
+                <div class="ml-2">
+                  <strong>Discount</strong>
+                  <strong>
+                    <p class="mb-0" style="color:red; font-size: 14px"><i>(*{{session('discount')->name}})</i></p>
+                  </strong>
                 </div>
-
-
+                <span class="mr-2"><strong>${{session('discount')->price}}</strong></span>
+                </li>
+                @endif
                 <li
                   class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
                   <div class="ml-2">
@@ -164,13 +174,17 @@
                       <p class="mb-0">(including VAT)</p>
                     </strong>
                   </div>
-                  <span class="summary-total-amount mr-2"><strong>${{getTotalPrice()}}.00</strong></span>
+                  @if(session('discount'))
+                  <span class="summary-total-amount mr-2"><strong>${{ getTotalPrice() - session('discount')->price }}.00</strong></span>
+                  @else
+                  <span class="summary-total-amount mr-2"><strong>${{ getTotalPrice()}}.00</strong></span>
+                  @endif 
                 </li>
-              </ul>
-  
-              <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg btn-block">
-                Go to checkout
-              </button>
+              </ul>  
+              <a onclick="checkout(this)" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg btn-block">
+                  Go to checkout
+              </a>
+            </div>
             </div>
           </div>
         </div>
@@ -185,15 +199,15 @@
         input.stepDown();
         updateTotal(input);
     }
-}
+  }
 
-function increaseValue(button) {
+  function increaseValue(button) {
     var input = button.parentNode.querySelector('input[type=number]');
         input.stepUp();
         updateTotal(input);
-}
+  }
 
-function updateTotal(input) {
+  function updateTotal(input) {
     var quantity = input.value;
     var price = input.getAttribute('data-price');
     var total = quantity * price;
@@ -203,9 +217,10 @@ function updateTotal(input) {
     var itemId = input.getAttribute('data-item-id');
     var size = input.getAttribute('data-size');
     updateCartDatabase(itemId, size, quantity);
-}
 
-function checkValue(input) {
+  }
+
+  function checkValue(input) {
     var maxAmount = input.getAttribute('data-max-amount');
     if (input.value < 1) {
         input.value = 1;
@@ -214,8 +229,8 @@ function checkValue(input) {
         input.value = maxAmount;
     }
     updateTotal(input);
-}
-function updateCartDatabase(itemId, size, quantity) {
+  }
+  function updateCartDatabase(itemId, size, quantity) {
     $.ajax({
         url: '/update-cart',
         method: 'POST',
@@ -234,26 +249,33 @@ function updateCartDatabase(itemId, size, quantity) {
             console.error('Error updating cart:', error);
         }
     });
-}
-function updateCartIcon(totalAmount) {
+  }
+  function updateCartIcon(totalAmount) {
     var cartIcon = document.getElementById('icon-amount-orders');
     var totalItemCart = document.getElementById('total-item-cart');
     cartIcon.textContent = totalAmount;
     totalItemCart.textContent = totalAmount;
-}
-
-function updateSummary(cartSummary){
+  }
+  function updateSummary(cartSummary){
   cartSummary.products.forEach(function(product){
     var productElement = document.querySelector('[data-item-summary-id="'+ product.id + '"] .summary-product-total');
-    if (productElement) {
+    if (productElement) {          
             productElement.textContent = `$${(product.price * product.quantity).toFixed(2)}`;
         }
   });
 
   var totalAmountElement = document.querySelector('.summary-total-amount strong');
-  totalAmountElement.textContent = `$${cartSummary.total.toFixed(2)}`;
-}
-function removeCart(itemId, itemSize){
+  // totalAmountElement.textContent = `$${cartSummary.total.toFixed(2)}`;
+  var totalAmount = cartSummary.total;
+
+  // Kiểm tra nếu có voucher
+  var discount = {{ session('discount') ? session('discount')->price : 0 }};
+  totalAmount -= discount;
+
+  totalAmountElement.textContent = `$${totalAmount.toFixed(2)}`;
+
+  }
+  function removeCart(itemId, itemSize){
   $.ajax({
         url: '/remove-cart',
         method: 'POST',
@@ -262,8 +284,7 @@ function removeCart(itemId, itemSize){
             item_id: itemId,
             item_size: itemSize
         },
-        success: function(response) {
-         
+        success: function(response) {         
                 $('#item-' + itemId).remove();
                 updateCartIcon(response.totalAmount);
                 updateSummary(response.cartSummary); // Cập nhật phần Summary
@@ -276,6 +297,64 @@ function removeCart(itemId, itemSize){
         },
         error: function(xhr, status, error) {
             console.error('Error updating cart:', error);
+        }
+    });
+  }
+
+  // function checkout(){
+  //   $.ajax({
+  //     url:'checkout',
+  //     type:'GET'
+  //   }).done(function(response){
+  //     if(response.status === 'error'){
+  //       Swal.fire({
+  //         icon: 'error',
+  //         title: 'Oops...',
+  //         text: `${response.des}`,
+  //         showCancelButton: true,
+  //         confirmButtonText: '<a href ="{{route("info")}}" style ="color:white">Change</a>',
+  //       })
+  //     } else if (response.status === 'susscess'){
+  //       console.log(response);
+  //       Swal.fire(
+  //         'The order was checked out successful',
+  //         'You clicked the button!',
+  //         'success'
+  //       )
+  //     }
+  //   });
+  // }
+
+  function checkout() {
+    $.ajax({
+        url: 'checkout',
+        type: 'GET',
+        success: function(response) {
+            if (response.status === 'error') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: `${response.description}`,
+                    showCancelButton: true,
+                    confirmButtonText: '<a href ="{{route("info")}}" style="color:white">Change</a>',
+                });
+            } else if (response.status === 'success') {
+                Swal.fire(
+                    'The order was checked out successfully',
+                    'You clicked the button!',
+                    'success'
+                ).then(() => {
+                    window.location.href = '{{ route("getCart") }}'; // Redirect to a success page
+                });
+            }
+        },
+        error: function(error) {
+            console.log(error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!'
+            });
         }
     });
 }

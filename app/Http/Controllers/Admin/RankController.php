@@ -33,9 +33,9 @@ class RankController extends Controller
         $data->description = $request->description;
         $check = $data->save();
         if(!empty($check)){
-            return redirect()->route('admin.rank.getList',compact('check'));
+            return redirect()->route('admin.ranks.getList',compact('check'));
         }
-        return redirect()->route('admin.rank.getList');
+        return redirect()->route('admin.ranks.getList');
     }
     public function getUpdate(Request $request,$id=0){
         if(!empty($id) && ctype_digit($id)){
@@ -59,10 +59,10 @@ class RankController extends Controller
                 $data->description = $request->description;
                 $check = $data->save();
                 if(!empty($check)){
-                    return redirect()->route('admin.rank.getList',compact('check'));
+                    return redirect()->route('admin.ranks.getList',compact('check'));
                 }
             }
-            return redirect()->route('admin.rank.getList')->with('msg','Error');    
+            return redirect()->route('admin.ranks.getList')->with('msg','Error');    
         }
     }
     public function deleteItem($id=0){
@@ -72,16 +72,16 @@ class RankController extends Controller
                 if ($ranks->canBeDeletedUser()) {
                     if($ranks->canBeDeletedDiscount()){
                         $ranks->delete();
-                        return redirect()->route('admin.rank.getList')->with('msg','Deleted Success');
+                        return redirect()->route('admin.ranks.getList')->with('msg','Deleted Success');
                     }
                     else {
-                        return redirect()->route('admin.rank.getList')->with('error','Không thể xóa rank này vì có liên kết với bảng khác');
+                        return redirect()->route('admin.ranks.getList')->with('error','Không thể xóa rank này vì có liên kết với bảng khác');
                     }
                 } else {
-                    return redirect()->route('admin.rank.getList')->with('error','Không thể xóa rank này vì có liên kết với bảng khác');
+                    return redirect()->route('admin.ranks.getList')->with('error','Không thể xóa rank này vì có liên kết với bảng khác');
                 }
             }
         }
-        return redirect()->route('admin.rank.getList')->with('msg','Error');
+        return redirect()->route('admin.ranks.getList')->with('msg','Error');
     }
 }

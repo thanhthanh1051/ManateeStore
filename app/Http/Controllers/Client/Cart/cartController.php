@@ -5,10 +5,16 @@ namespace App\Http\Controllers\Client\Cart;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Cart;
+use App\Models\Order;
+use App\Models\User;
+use App\Models\OrderDetail;
 use App\Models\Product;
+use App\Models\Discount;
+use App\Models\Rank;
 use Illuminate\Support\Facades\Auth;
 class cartController extends Controller
 {
+    private $orderdetail;
     public function getCart()
     {
         if (Auth::check()) {
@@ -18,13 +24,6 @@ class cartController extends Controller
         // Tạo một mảng để lưu trữ thông tin sản phẩm
         $products = [];
 
-        // Lặp qua từng mục giỏ hàng và lấy thông tin sản phẩm tương ứng
-        // foreach ($cartItems as $cartItem) {
-        //     $product = Product::find($cartItem->product_id);
-        //     if ($product) {
-        //         $products[] = $product;
-        //     }
-        // }
         foreach ($cartItems as $cartItem) {
             $product = Product::find($cartItem->product_id);
             if ($product) {
@@ -130,30 +129,7 @@ class cartController extends Controller
 
         return response()->json(['success' => false], 404);
     }
-    // public function getCartSummary() {
-    //     $cartItems = Cart::where('user_id', Auth::id())->get();
-    //     $products = [];
-    //     $totalAmount = 0;
-    
-    //     foreach ($cartItems as $cartItem) {
-    //         $product = Product::find($cartItem->product_id);
-    //         if ($product) {
-    //             $productData = [
-    //                 'name' => $product->name,
-    //                 'price' => $product->price_sell,
-    //                 'quantity' => $cartItem->amount,
-    //                 'size' => $cartItem->size
-    //             ];
-    //             $products[] = $productData;
-    //             $totalAmount += $product->price_sell * $cartItem->amount;
-    //         }
-    //     }
-    
-    //     return response()->json([
-    //         'products' => $products,
-    //         'totalAmount' => $totalAmount
-    //     ]);
-    // }
+
     public function getCartSummaryData(){
         $cartItems = Cart::where('user_id', Auth::id())->get();
         $products = [];
@@ -177,5 +153,159 @@ class cartController extends Controller
             'products' => $products,
             'total' => $totalAmount
         ];
+    }
+    
+    public function checkDiscount(Request $request){
+        $code = $request->voucher;
+        $discount = Discount::where('code',$code)->first();
+        if($discount){
+            $rankDiscount = $discount->rank_id;
+            $rankCus = Auth()->user()->rank_id;
+            if($rankDiscount == $rankCus){
+                $count_discount = $discount->count();
+                if($count_discount>0){
+                    return redirect()->back()->with(['discount'=>$discount]);
+                    }else{
+                        return redirect()->back()->with(['discount'=>$discount]);
+                }
+            }else{
+                return redirect()->back();
+            }
+        }else{
+            return response()->json(['success' => false, 'message' => 'Invalid discount code']);
+       }
+    }
+    
+    // public function checkout(Request $request){
+    //     $check = Auth::user()->phone && Auth::user()->address;
+    //     if(!($check)){
+    //         return response()->json([
+    //             "status" => "error",
+    //             "des" => "You dont have fill out your information to checkout"
+    //         ]);
+    //     }else{
+    //         $cartItems = Cart::where('user_id', Auth::user()->id)->get();
+
+    //         $order = new Order();
+    //         $order->user_id = Auth::user()->id;
+    //         $order->save();
+    //         $totalAmount = 0;
+    
+    //         foreach($cartItems as $cartItem){
+    //             $product = Product::where('id', $cartItem->product_id)->first();     
+    //             $orderDetail = new OrderDetail();
+    //             $orderDetail->order_id = $order->id;
+    //             $orderDetail->product_id = $cartItem->product_id;
+    //             $orderDetail->amount = $cartItem->amount;
+    //             $orderDetail->price = $product->price_sell;
+    //             $orderDetail->save();
+    
+    //             $totalAmount += $cartItem->amount * $product->price_sell;
+    //         }
+    //         $order->total = $totalAmount;
+    //         $order->save();
+    
+    //         Cart::where('user_id', Auth::user()->id)->delete();
+    //         return response([
+    //             "status" => "success"
+    //         ]);
+    //     }
+    // }
+
+    public function checkout(Request $request){
+        $userAu = Auth::user()->id;
+        $user = User::find($userAu);
+        $check = $user->phone && $user->address;
+
+        if(!($check)){
+            return response()->json([
+                "status" => "error",
+                "description" => "You need to fill information to checkout"
+            ]);
+        } else {
+            $cartItems = Cart::where('user_id', $user->id)->get();
+
+            if($cartItems->isEmpty()){
+                return response()->json([
+                    "status" => "error",
+                    "description" => "Your cart is empty"
+                ]);
+            }
+
+            $order = new Order();
+            $order->user_id = $user->id;
+            $order->phone = $user->phone;
+            $order->address = $user->address;
+            $order->total = 0;
+            $discountAmount = 0;
+
+            if(session('discount')){
+                $discount = session('discount');
+                $order->discount_id= $discount->id;
+                $discountAmount = $discount->price;
+            }
+            $order->save();
+
+            $totalAmount = 0;
+
+            foreach($cartItems as $cartItem){
+                $product = Product::find($cartItem->product_id);
+
+                if(!$product){
+                    return response()->json([
+                        "status" => "error",
+                        "description" => "One or more in your cart do not exist"
+                    ]);
+                }
+
+                $product->amount -= $cartItem->amount;
+                $product->save();
+
+                $this->orderdetail = new OrderDetail();
+                $data = [
+                    "order_id" => $order->id,
+                    "product_id" => $cartItem->product_id,
+                    "amount" => $cartItem->amount,
+                    "price" => $product->price_sell
+                ];
+                $this->orderdetail->add($data);
+                // $orderDetail = new OrderDetail();
+                // $orderDetail->order_id = $order->id;
+                // $orderDetail->product_id = $cartItem->product_id;
+                // $orderDetail->amount = $cartItem->amount;
+                // $orderDetail->price = $product->price_sell;
+                // $orderDetail->save();
+
+                $totalAmount += $cartItem->amount * $product->price_sell;
+            }
+            $order->total = $totalAmount - $discountAmount;
+            $order->status = 1;
+            $order->save();
+
+            session()->forget('discount');
+            Cart::where('user_id', $user->id)->delete();
+
+            return response()->json([
+                "status" => "success",
+                "description" => "Checkout successful"
+            ]);
+        }
+    }
+
+    public function info(){
+        return view('client.cart.info');
+    }
+    public function postInfo(Request $request){
+        $request->validate([
+            "phone" => 'required| string | min:10 | max:10',
+            "address" => 'required'
+        ]);
+        $user = User::where('id',Auth::user()->id)->first();
+        if($user){
+            $user->phone = $request->phone;
+            $user->address = $request->address;
+            $user->save();
+        }
+        return redirect()->route('getCart');
     }
 }

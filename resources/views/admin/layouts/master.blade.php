@@ -77,6 +77,20 @@
                 </div>
             </li> --}} -->
             <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#ranks"
+                    aria-expanded="true" aria-controls="collapseTwo">
+                    <i class="fas fa-fw fa-cog"></i>
+                    <span>Ranks</span>
+                </a>
+                <div id="ranks" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Custom Ranks:</h6>
+                        <a class="collapse-item" href="{{route('admin.ranks.getList')}}">Show List</a>
+                        <a class="collapse-item" href="{{route('admin.ranks.getAdd')}}">Add New</a>
+                    </div>
+                </div>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#products"
                     aria-expanded="true" aria-controls="collapseTwo">
                     <i class="fas fa-fw fa-cog"></i>
@@ -145,12 +159,12 @@
                 <div id="Discounts" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Custom Discounts:</h6>
-                        <a class="collapse-item" href="">Show List</a>
-                        <a class="collapse-item" href="">Add New</a>
+                        <a class="collapse-item" href="{{route('admin.discounts.getList')}}">Show List</a>
+                        <a class="collapse-item" href="{{route('admin.discounts.getAdd')}}">Add New</a>
                     </div>
                 </div>
             </li>
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#Ranks"
                     aria-expanded="true" aria-controls="collapseTwo">
                     <i class="fas fa-fw fa-cog"></i>
@@ -163,7 +177,7 @@
                         <a class="collapse-item" href="{{route('admin.rank.getAdd')}}">Add New</a>
                     </div>
                 </div>
-            </li>
+            </li> --}}
 
 
 

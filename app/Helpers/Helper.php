@@ -5,6 +5,7 @@ use App\Models\CategoryValue;
 use App\Models\CategoryParentProduct;
 use App\Models\Product;
 use App\Models\Cart;
+use App\Models\Rank;
 function getNameProduct($id = 0){
     $product = Product::find($id);
     return $product->name;
@@ -152,4 +153,8 @@ function getTotalPrice(){
         $key = 0;
     }
     return $key;
+}
+function getNameRankToDiscount($idRank){
+    $rank = Rank::where('id',$idRank)->first();
+    return $rank->name;
 }

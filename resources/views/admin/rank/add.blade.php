@@ -28,7 +28,6 @@
                             <span style="color: red">{{$message}}</span>
                         @enderror
                     </div>
-
                     <div class="mb-3">
                         <label for="">Description</label>
                         <input type="text" name="description" class="form-control w-50" placeholder="Descriptions..." value="{{old('description')}}">
