@@ -4,17 +4,32 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use DB;
 use App\Models\Category;
-// use App\Models\Brand;
+use App\Models\OrderDetail;
+use DB;
 class Product extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'code',
+        'name',
+        'images',
+        'category_parent',
+        'category_product',
+        'category_value',
+        'amount',
+        'size',
+        'description',
+        'color',
+        'price_buy',
+        'price_sell'
+    ];
+
     public function category(){
         return $this->belongsTo(Category::class);
     }
-    // public function brand(){
-    //     return $this->belongsTo(Brand::class);
-    // }
+    public function orderDetail(){
+        return $this->hasMany(OrderDetail::class);
+    } 
 }

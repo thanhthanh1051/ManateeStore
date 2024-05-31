@@ -1,0 +1,70 @@
+.info label {
+    margin-top: 10px;
+    font-weight: bold;
+    color: black;
+    font-size: 16px;
+    float: left;
+}
+
+.mb-3 {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.form-control {
+    width: 100%;
+}
+
+fieldset {
+    margin: 0 10px 10px 5px !important;
+    border: 2px solid lightgrey !important;
+    border-radius: 10px;
+    padding:10px !important;
+    width: 95% !important;
+}
+
+.profile-tags {
+    margin-bottom: 20px;
+}
+
+.information {
+    display: inline-block;
+    width: 48%;
+}
+
+.change a {
+    margin-right: 20px;
+}
+
+@media (max-width:1140px) {
+    .information {
+        display: block;
+        width: 100%;
+    }
+}
+
+@media (max-width:830px) {
+    .information {
+        display: inline-block;
+        width: 47%;
+    }
+}
+
+@media (max-width: 500px) {
+    .information {
+        display: block;
+        width: 95%;
+    }
+
+    fieldset {
+        width: 87% !important;
+    }
+
+    .change a {
+        font-size: 14px;
+        margin-right: 10px;
+    }
+    .change button {
+        font-size: 14px;
+    }
+}

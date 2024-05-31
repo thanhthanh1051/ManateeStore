@@ -14,6 +14,7 @@ use App\Http\Controllers\Client\DashboardController as ClientDashboardController
 use App\Http\Controllers\Client\Product\filterController as ClientFilterController;
 use App\Http\Controllers\Client\Product\productController as ClientProductDetailController;
 use App\Http\Controllers\Client\Cart\cartController as ClientCartController;
+use App\Http\Controllers\Client\profile\accountController as ClientProfileController;
 
 use App\Http\Controllers\MyAuth\AuthController;
 
@@ -124,3 +125,12 @@ Route::post('/check-discount', [ClientCartController::class, 'checkDiscount'])->
 Route::get('/checkout', [ClientCartController::class, 'checkout'])->name('checkout');
 Route::get('/info', [ClientCartController::class, 'info'])->name('info');
 Route::post('/info', [ClientCartController::class, 'postInfo'])->name('postInfo');
+Route::get('/getAccount', [ClientProfileController::class, 'getAccount'])->name('getAccount');
+Route::post('/getAccount', [ClientProfileController::class, 'postAccount'])->name('postAccount');
+Route::get('/get-order', [ClientProfileController::class, 'getOrder'])->name('get-order');
+Route::get('/get-pending', [ClientProfileController::class, 'getPending'])->name('get-pending');
+Route::get('/get-procesing', [ClientProfileController::class, 'getProcessing'])->name('get-processing');
+Route::get('/get-ontheway', [ClientProfileController::class, 'getOntheway'])->name('get-ontheway');
+Route::get('/get-intransit', [ClientProfileController::class, 'getIntransit'])->name('get-intransit');
+Route::get('/get-cancelled', [ClientProfileController::class, 'getCancelled'])->name('get-cancelled');
+Route::get('/cancel/{id}', [ClientProfileController::class, 'cancel'])->name('cancel');

@@ -4,8 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Order;
 use DB;
-
 class Discount extends Model
 {
     use HasFactory;
@@ -40,5 +40,8 @@ class Discount extends Model
     }
     public function deleteItem($id){
         return Discount::where('id',$id)->delete();
+    }
+    public function orders(){
+        return $this->hasMany(Order::class);
     }
 }

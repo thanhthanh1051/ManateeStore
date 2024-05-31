@@ -158,3 +158,43 @@ function getNameRankToDiscount($idRank){
     $rank = Rank::where('id',$idRank)->first();
     return $rank->name;
 }
+function getOrderPending($id,$status){
+    if($status==1){
+        $orderdetail = new OrderDetail();
+        $list = $orderdetail->getlist($id);
+        return $list;
+    }
+    return null;
+}
+function getOrderShipped($id,$status){
+    if($status==3){
+        $orderdetail = new OrderDetail();
+        $list = $orderdetail->getlist($id);
+        return $list;
+    }
+    return null;
+}
+function getOrderOntheway($id,$status){
+    if($status==4){
+        $orderdetail = new OrderDetail();
+        $list = $orderdetail->getlist($id);
+        return $list;
+    }
+    return null;
+}
+function getOrderDelivered($id,$status){
+    if($status==5){
+        $orderdetail = new OrderDetail();
+        $list = $orderdetail->getlist($id);
+        return $list;
+    }
+    return null;
+}
+function getOrdered($id,$status){
+    if($status==2){
+        $orderdetail = new OrderDetail();
+        $list = $orderdetail->getlist($id);
+        return $list;
+    }
+    return null;
+}
