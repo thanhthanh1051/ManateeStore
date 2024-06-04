@@ -145,8 +145,11 @@
                 <div id="Orders" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Custom Orders:</h6>
-                        <a class="collapse-item" href="">Show List</a>
-                        <!-- <a class="collapse-item" href="">List Status</a>  -->
+                        <a class="collapse-item" href="{{route('admin.orders.getPending')}}">Pending</a>
+                        <a class="collapse-item" href="{{route('admin.orders.getProcessing')}}">Processing</a>
+                        <a class="collapse-item" href="{{route('admin.orders.getOntheway')}}">On the way</a>
+                        <a class="collapse-item" href="{{route('admin.orders.getIntransit')}}">Intransit</a>
+                        <a class="collapse-item" href="{{route('admin.orders.getCancelled')}}">Cancelled</a>
                     </div>
                 </div>
             </li>

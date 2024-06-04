@@ -6,7 +6,7 @@ use App\Http\Controllers\Admin\CategoryParentController as AdminCategoryParentCo
 use App\Http\Controllers\Admin\CategoryProductController as AdminCategoryProductController;
 use App\Http\Controllers\Admin\CategoryValueController as AdminCategoryValueController;
 use App\Http\Controllers\Admin\CategoryParentProductController as AdminCategoryParentProductController;
-// use App\Http\Controllers\Admin\BrandController as AdminBrandController;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\RankController as AdminRankController;
 use App\Http\Controllers\Admin\DiscountController as AdminDiscountController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
@@ -80,14 +80,6 @@ Route::prefix('admin')->name('admin.')->group(function (){
         Route::get('/deleteCateParentProduct/{id}', [AdminCategoryParentProductController::class, 'deleteItem'])->name('deleteCateParentProduct');
         Route::get('/get-category-products/{categoryParentId}', [AdminCategoryValueController::class, 'getCategoryProduct']);
     });
-    // Route::prefix('brands')->name('brands.')->group(function () {
-    //     Route::get('/', [AdminBrandController::class, 'getList'])->name('getList');
-    //     Route::get('/add', [AdminBrandController::class, 'getAdd'])->name('getAdd');
-    //     Route::post('/add', [AdminBrandController::class, 'postAdd'])->name('postAdd');
-    //     Route::get('/update/{id}', [AdminBrandController::class, 'getUpdate'])->name('getUpdate');
-    //     Route::post('/update/{id}', [AdminBrandController::class, 'postUpdate'])->name('postUpdate');
-    //     Route::get('deleteItem/{id}', [AdminBrandController::class, 'deleteItem'])->name('delete');
-    // });
     Route::prefix('ranks')->name('ranks.')->group(function () {
         Route::get('/', [AdminRankController::class, 'getList'])->name('getList');
         Route::get('/add', [AdminRankController::class, 'getAdd'])->name('getAdd');
@@ -104,12 +96,22 @@ Route::prefix('admin')->name('admin.')->group(function (){
         Route::post('/update/{id}', [AdminDiscountController::class, 'postUpdate'])->name('postUpdate');
         Route::get('deleteItem/{id}', [AdminDiscountController::class, 'deleteItem'])->name('delete');
     });
+    Route::prefix('orders')->name('orders.')->group(function () {
+        Route::get('/getPending', [AdminOrderController::class, 'getPending'])->name('getPending');
+        Route::get('/getProcessing', [AdminOrderController::class, 'getProcessing'])->name('getProcessing');
+        Route::get('/getOntheway', [AdminOrderController::class, 'getOntheway'])->name('getOntheway');
+        Route::get('/getIntransit', [AdminOrderController::class, 'getIntransit'])->name('getIntransit');
+        Route::get('/getCancelled', [AdminOrderController::class, 'getCancelled'])->name('getCancelled');
+        Route::get('/getDetailOrder/{id}', [AdminOrderController::class, 'detailOrder'])->name('getDetailOrder');
+    });
 });
 
 // Routes Client
 Route::post('login', [AuthController::class,'login'])->name('login');
 Route::post('logout', [AuthController::class,'logout'])->name('logout');
 Route::post('register', [AuthController::class,'register'])->name('register');
+Route::post('changePassword', [AuthController::class,'changePassword'])->name('changePassword');
+Route::get('changePassword', [AuthController::class,'getChangePassword'])->name('getChangePassword');
 Route::get('/', [ClientDashboardController::class, 'home'])->name('home');
 Route::get('/navbar/{cateParent}/{catePro}', [ClientDashboardController::class, 'navbar'])->name('navbar');
 Route::get('/kid', [ClientDashboardController::class, 'kid'])->name('kid');

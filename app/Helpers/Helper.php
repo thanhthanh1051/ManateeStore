@@ -158,43 +158,31 @@ function getNameRankToDiscount($idRank){
     $rank = Rank::where('id',$idRank)->first();
     return $rank->name;
 }
-function getOrderPending($id,$status){
-    if($status==1){
-        $orderdetail = new OrderDetail();
-        $list = $orderdetail->getlist($id);
-        return $list;
+function displayStatus($status){
+    if($status == 1){
+        return 'Pending';
     }
-    return null;
+    else if($status == 4) {
+        return 'Cancelled';
+    } else if($status == 2) {
+        return 'Processing';
+    } else if($status == 3) {
+        return 'On the way';
+    } else {
+        return 'Cancelled';
+    }
 }
-function getOrderShipped($id,$status){
-    if($status==3){
-        $orderdetail = new OrderDetail();
-        $list = $orderdetail->getlist($id);
-        return $list;
+function displayClassStatusOrder($status) {
+    if($status == 1){
+        return 'secondary';
     }
-    return null;
-}
-function getOrderOntheway($id,$status){
-    if($status==4){
-        $orderdetail = new OrderDetail();
-        $list = $orderdetail->getlist($id);
-        return $list;
+    else if($status == 5) {
+        return 'danger';
+    } else if($status == 2) {
+        return 'warning';
+    } else if($status == 3) {
+        return 'info';
+    } else{
+        return 'success';
     }
-    return null;
-}
-function getOrderDelivered($id,$status){
-    if($status==5){
-        $orderdetail = new OrderDetail();
-        $list = $orderdetail->getlist($id);
-        return $list;
-    }
-    return null;
-}
-function getOrdered($id,$status){
-    if($status==2){
-        $orderdetail = new OrderDetail();
-        $list = $orderdetail->getlist($id);
-        return $list;
-    }
-    return null;
 }

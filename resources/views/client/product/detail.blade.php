@@ -74,7 +74,7 @@
               <dt class="col-3">Quantity</dt>
               <dd class="col-9">{{$product->amount}}</dd>
             </div>
-  
+            
             <hr />
   
             <div class="row mb-4">

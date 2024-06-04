@@ -72,7 +72,7 @@
                             <span id="icon" class="material-symbols-outlined">
                                 manage_accounts
                             </span>
-                            <a href="">Change Password</a>
+                            <a href="{{route('getChangePassword')}}">Change Password</a>
                         </div>
 
                         <form id="logout" action="{{route('logout')}}" method="POST" style="margin-bottom: 0">

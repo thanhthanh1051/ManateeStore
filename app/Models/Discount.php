@@ -9,6 +9,14 @@ use DB;
 class Discount extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'name',
+        'code',
+        'price',
+        'rank_id',
+        'amount'
+    ];
+
     protected $table = 'discounts';
     public function getList(){
         $discount = Discount::all();

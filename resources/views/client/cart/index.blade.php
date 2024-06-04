@@ -32,7 +32,7 @@
                       <span style="width: 30px; height:20px; background-color: {{$item->color}}; display: inline-block"></span>
                     </p>
 
-                    <p>Size: {{typeSize($item->cart_size)}}
+                    <p>Size: {{ typeSize($item->cart_size) }}
                     {{-- @php
                     $sizes = explode(',', $item->size); // Tách chuỗi thành mảng các giá trị
                     @endphp

@@ -266,6 +266,7 @@ class cartController extends Controller
                     "order_id" => $order->id,
                     "product_id" => $cartItem->product_id,
                     "amount" => $cartItem->amount,
+                    "size" => $cartItem->size,
                     "price" => $product->price_sell
                 ];
                 $this->orderdetail->add($data);
